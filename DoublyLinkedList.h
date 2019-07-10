@@ -1,198 +1,166 @@
-#pragma once
 #include <stdlib.h>
 
-/* The struct holding the generic value. The nxt value holds the address of the next link in the
- * list, which is used to traverse the list from a given starting point. The val value is a void
- * pointer, which can hold a pointer to any value you would like. How quaint.
- */
-typedef struct LL {
-	struct LL *nxt;
+/* Struct to hold doubly linked list */
+typedef struct DLL {
+	struct DLL *prev, *next;
 	void* val;
-}LL;
+};
 
-/* Initialize a linked list pointer with a given value. The list is initialized with malloc,
- * so the list will eventually have to be freed before the end of the program is reached. The
- * pointer for the next link is set to NULL, which the list always takes to mean that said 
- * link is the end of the list.
- */
-LL *initLinkedList(void* val)
-{
-	LL *ll = (LL*)malloc(sizeof(LL));
-	ll->nxt = NULL;
-	ll->val = val;
-	return ll;
+/* TODO: Make init function, free function, and a RECURSIVE free function */
+DLL* initDLL(){
+	DLL* nDLL = malloc(sizeof(DLL*)*2 + sizeof(void*));
+	nDLL->prev = NULL;
+	nDLL->next = NULL;
+	nDLL->val = NULL;
+	return nDLL;
 }
 
-/* Frees every link in the list sequentially. This method assumes that the only methods used
- * to instatiate the list were the ones provided here, or malloc. 
- */
-void freeLinkedList(LL* start)
+/* Frees all items in the list. DOES NOT FREE THEIR VAL POINTER */
+void freeDLL(DLL *list)
 {
-	LL *t = start, *t2 = start;
-	while(t2)
-	{
-		t2 = t->nxt;
+	DLL *t = DLLstart(list), *f = t;
+	while(f != NULL){
+		f=t->nxt;
 		free(t);
-		t =  t2;
+		t=f;
 	}
 }
 
-/* Adds an element to the back of the list.
+/* Frees all items in the list, including their val pointers.
+ * ALL LINKS MUST BE INTITIALIZED WITH MALLOC, AND THE VALUES THEY STORE MUST
+ * ALSO BE MALLOC'D!
  */
-void pushBackLinkedList(LL *start, void* val)
-{
-	LL *t = start;
-	while(t->nxt != NULL)
-		t = t->nxt;
-	LL *nxt = initLinkedList(val);
-	t->nxt = nxt;
-}
-
-/* Adds a link to the list at a certain index, pushing back the rest on the links. It's necessary
- * to return the address of the first link in the list to preserve list continuity. The method 
- * will always return the address of the first link in the list, and said address should always be
- * assigned to the start variable. 
- *
- * Ex: <linkedListStart> = insertLinkedList(<linkedListStart>, index, value);
- *
- * if the index was 0, the address of the starting pointer would need to change, thus the method 
- * returns the adress of the inserted value, in that case.
- */
-LL* insertLinkedList(LL *start, int index, void* val)
-{
-	LL *t = start, *newLink = initLinkedList(val);
-	if(index == 0)
-	{
-		newLink->nxt = start;
-		return newLink;
+void rFreeDLL(DLL *list){
+	DLL *t = DLLstart(list), *f = t;
+	while(f != NULL){
+		f=t->nxt;
+		free(t->val);
+		free(t);
+		t=f;
 	}
-	for(int i = 0; i < index - 1; i++)
-		if(t->nxt)
-			t=t->nxt;
-		else
-			break;
-	newLink->nxt = t->nxt;
-	t->nxt = newLink;
-	return start;
-
 }
 
-/* Returns the amount of links in the list.
- */
-int linkedListSize(LL *start)
-{
-	if(start == NULL)
-		return 0;
-	LL *t = start;
+/* Returns pointer to first link in DLL */
+DLL* DLLstart(DLL* list){
+	DLL *t = list;
+	while(t->prev != NULL)
+		t = t->prev;
+	return t;
+}
+
+/* Returns pointer to last link in DLL */
+DLL* DLLend(DLL* list){
+	DLL* t = list;
+	while(t->next != NULL)
+		t = t->next;
+	return t;
+}
+
+/* Returns the size of the DLL */
+int DLLsize(DLL* list){
+	DLL *t = DLLstart(list);
 	int count = 1;
-	while(t->nxt != NULL)
-	{
-		t = t->nxt;
+	while(t->next != NULL){
 		count++;
+		t = t->next;
 	}
 	return count;
 }
 
-/* Returns the value stored at a specific index in the list.
- */
-void* getLink(LL *start, int index)
-{
-	LL *t = start;
-	for(int i = 0; i < index; i++)
-	{
-		if(t->nxt == NULL)
+/* Returns the pointer to a specific link in the list 
+ * Returns NULL if the index specified is invalid. 
+ * */
+DLL* DLLat(DLL* list, int index){
+	DDL* t = DLLstart(list);
+	int counter = 0;
+	while(1){
+		if(counter == index)
+			return t;
+		if(t->nxt == NULL && counter != index)
+			return NULL;
+		counter++;
+		t=t->nxt;
+	}
+}
+
+/* Returns the value held by the first link */
+void* frontDLL(DLL* list){
+	return DLLstart(list)->val;
+}
+
+/* Returns the value held by the last link */
+void* backDLL(DLL* list){
+	return DLLend(list)->val;
+}
+
+/* Returns the value held by a specific link in the list
+ * Returns NULL if the index is out of bounds.
+ * */
+void* atDLL(DLL* list, int index){
+	DLL* t = DLLstart(list);
+	void* val = NULL:
+	int counter = 0;
+	while(counter < index){
+		counter++;
+		if(t->next != NULL)
+			t = t->next;
+		else
 			break;
-		t = t->nxt;
 	}
-	return t->val;
+	if(counter == index)
+		return t->val;
+	else
+		return NULL;
 }
 
-/* Removes a link from the list, and relinks the proceeding and preceeding links to each 
- * other to preserve continuity.
- */
-void deleteLink(LL *start, int index)
-{
-	LL *t = start, *t2;
-	for(int i = 0; i < index - 1; i++)
-	{
-		if(t == NULL)
-			return;
-		t=t->nxt;
+/* Adds a link to end of DLL */
+void pushDLL(DLL* list, void* val){
+	DLL* t = DLLend(list);
+	DLL* n = initDLL();
+	n->val = val;
+	t->next = n;
+	n->prev = t;
+}
+
+/* Removes the last link in the DLL 
+ * This method has the ability to remove the object pointed to by the given DLL pointer.
+ * Thus, it returns a pointer to the last DLL object, or NULL if no more objects exist within
+ * the list.
+ * */
+DLL* popDLL(DLL* list){
+	DLL* t = DLLend(list);
+	if(t->prev == NULL){
+		free(t);
+		return NULL;
 	}
-	t2 = t;
-	t = t->nxt;
-	t2->nxt = t->nxt;
-	free(t);
-}
-
-/* Sets the value of a specific link to given value.
- */
-void setLink(LL *start, int index, void* val)
-{
-	LL *t = start;
-	for(int i = 0; i < index; i++)
-	{
-		t = t->nxt;
-		if(t == NULL)
-			return;
-	}
-	t->val = val;
-}
-
-/* Gets the first value in the list. Basically useless, but whatever.
- */
-void* frontLink(LL *start)
-{
-	return start->val;
-}
-
-/* Deletes the last link in the list.
- */
-void popBackLinkedList(LL *start)
-{
-	LL *t = start, *t2;
-	while(t->nxt)
-	{
-		t2 = t;
-		t = t->nxt;
-	}
-	t2->nxt = NULL;
-	free(t);
-}
-
-/* Returns the last link in the list.
- */
-void* backLink(LL *start)
-{
-	LL *t = start;
-	while(t->nxt)
-		t=t->nxt;
-	return t->val;
-}
-
-/* Returns the pointer to the link at the given index. If the index is greater than the size of the
- * list, returns a pointer to the last link in the list. If the index is less than 0, returns a
- * pointer to the first element, which is essentialy the pointer already passed to the method by the
- * "start" parameter.
- */ 
-LL* linkPointer(LL *start, int index)
-{
-	LL *t = start;
-	for(int i = 0; i < index && t->nxt; i++)
-	{
-		t =  t->nxt;
-	}
+	t = t->prev;
+	free(t->nxt);
+	t->nxt = NULL;
 	return t;
 }
 
-/* Swaps the contents of two links at separate (or equal indexes.
+/* Removes a link from a specified index. 
+ * Returns a pointer to the previous DLL object to the one deleted, the next one if that one doesn't exist,
+ * or NULL if neither exist.
+ *
+ * Returns the original list if the specified index is invalid.
  */
-void swapLink(LL *start, int index1, int index2)
-{
-	LL *t1 = linkPointer(start, index1),
-	       *t2 = linkPointer(start, index2);
-	void* n1 = t1->val,
-	    *n2 = t2->val;
-	t1->val = n2;
-	t2->val = n1;
+DLL* deleteDLL(DLL* list, int index){
+
+	DLL *t = DLLat(list, index);
+	if(t == NULL)
+		return list;
+	DLL *n = t->next, *p = t->prev;
+	if(p != NULL && n != NULL){
+		p->next = n;
+	}else if(p != NULL && n == NULL){
+		p->next = NULL;
+	}
+	
+	free(t);
+
+	// Return the correct pointer
+	return (p != NULL) ? p : (n != NULL) ? n : NULL;
 }
+
+
