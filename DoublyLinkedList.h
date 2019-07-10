@@ -4,7 +4,7 @@
 typedef struct DLL {
 	struct DLL *prev, *next;
 	void* val;
-};
+} DLL;
 
 /* TODO: Make init function, free function, and a RECURSIVE free function */
 DLL* initDLL(){
@@ -15,12 +15,20 @@ DLL* initDLL(){
 	return nDLL;
 }
 
+/* Returns pointer to first link in DLL */
+DLL* DLLstart(DLL* list){
+	DLL *t = list;
+	while(t->prev != NULL)
+		t = t->prev;
+	return t;
+}
+
 /* Frees all items in the list. DOES NOT FREE THEIR VAL POINTER */
 void freeDLL(DLL *list)
 {
 	DLL *t = DLLstart(list), *f = t;
 	while(f != NULL){
-		f=t->nxt;
+		f=t->next;
 		free(t);
 		t=f;
 	}
@@ -33,20 +41,13 @@ void freeDLL(DLL *list)
 void rFreeDLL(DLL *list){
 	DLL *t = DLLstart(list), *f = t;
 	while(f != NULL){
-		f=t->nxt;
+		f=t->next;
 		free(t->val);
 		free(t);
 		t=f;
 	}
 }
 
-/* Returns pointer to first link in DLL */
-DLL* DLLstart(DLL* list){
-	DLL *t = list;
-	while(t->prev != NULL)
-		t = t->prev;
-	return t;
-}
 
 /* Returns pointer to last link in DLL */
 DLL* DLLend(DLL* list){
@@ -71,15 +72,15 @@ int DLLsize(DLL* list){
  * Returns NULL if the index specified is invalid. 
  * */
 DLL* DLLat(DLL* list, int index){
-	DDL* t = DLLstart(list);
+	DLL* t = DLLstart(list);
 	int counter = 0;
 	while(1){
 		if(counter == index)
 			return t;
-		if(t->nxt == NULL && counter != index)
+		if(t->next == NULL && counter != index)
 			return NULL;
 		counter++;
-		t=t->nxt;
+		t=t->next;
 	}
 }
 
@@ -98,7 +99,7 @@ void* backDLL(DLL* list){
  * */
 void* atDLL(DLL* list, int index){
 	DLL* t = DLLstart(list);
-	void* val = NULL:
+	void* val = NULL;
 	int counter = 0;
 	while(counter < index){
 		counter++;
@@ -134,8 +135,8 @@ DLL* popDLL(DLL* list){
 		return NULL;
 	}
 	t = t->prev;
-	free(t->nxt);
-	t->nxt = NULL;
+	free(t->next);
+	t->next = NULL;
 	return t;
 }
 
