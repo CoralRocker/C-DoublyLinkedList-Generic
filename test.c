@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include "DoublyLinkedList.h"
 
+#define getVar(var) #var
+
 void printDLL(DLL* list){
 	int size = DLLsize(list);
 	printf("DLL\n");
@@ -12,14 +14,12 @@ void printDLL(DLL* list){
 }
 
 int main(){
-	DLL* myDLL = initDLL();
-	myDLL->val = 234;
-	
-	printDLL(myDLL);
-
-	pushDLL(myDLL, 290);
-
-	printDLL(myDLL);
-
-	freeDLL(myDLL);
+	DLL *dll = initDLL(2320);
+	pushDLL(dll, 2321);
+	//pushDLL(dll, 2322);
+	printf("DLL 0: %p\n", dll);
+	dll = deleteDLL(dll, 0);
+	printf("Del 0: %p\n", dll);
+	dll = deleteDLL(dll, 0);
+	printf("Del 0: %p\n", dll);
 }

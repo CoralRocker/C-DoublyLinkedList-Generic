@@ -7,11 +7,11 @@ typedef struct DLL {
 } DLL;
 
 /* TODO: Make init function, free function, and a RECURSIVE free function */
-DLL* initDLL(){
+DLL* initDLL(void* val){
 	DLL* nDLL = malloc(sizeof(DLL*)*2 + sizeof(void*));
 	nDLL->prev = NULL;
 	nDLL->next = NULL;
-	nDLL->val = NULL;
+	nDLL->val = val;
 	return nDLL;
 }
 
@@ -117,8 +117,7 @@ void* atDLL(DLL* list, int index){
 /* Adds a link to end of DLL */
 void pushDLL(DLL* list, void* val){
 	DLL* t = DLLend(list);
-	DLL* n = initDLL();
-	n->val = val;
+	DLL* n = initDLL(val);
 	t->next = n;
 	n->prev = t;
 }
@@ -148,20 +147,51 @@ DLL* popDLL(DLL* list){
  */
 DLL* deleteDLL(DLL* list, int index){
 
-	DLL *t = DLLat(list, index);
-	if(t == NULL)
+	DLL *t = DLLat(list, index), *p, *n;
+	if(!t)
 		return list;
-	DLL *n = t->next, *p = t->prev;
-	if(p != NULL && n != NULL){
-		p->next = n;
-	}else if(p != NULL && n == NULL){
+	p=t->prev;
+	n=t->next;
+
+	if(!p && n)
+		n->prev = NULL;
+	else if(!n && p)
 		p->next = NULL;
+	else if(p && n){
+		p->next = n;
+		n->prev = p;
 	}
-	
 	free(t);
 
 	// Return the correct pointer
 	return (p != NULL) ? p : (n != NULL) ? n : NULL;
 }
 
+/* Removes a link from a specified index. ONLY USE ON MALLOC'D MEMORY
+ * Returns a pointer to the previous DLL object to the one deleted, the next one if that one doesn't exist,
+ * or NULL if neither exist.
+ *
+ * Returns the original list if the specified index is invalid.
+ */
+DLL* mDeleteDLL(DLL* list, int index){
 
+	DLL *t = DLLat(list, index), *p, *n;
+	if(!t)
+		return list;
+	p=t->prev;
+	n=t->next;
+
+	if(!p && n)
+		n->prev = NULL;
+	else if(!n && p)
+		p->next = NULL;
+	else if(p && n){
+		p->next = n;
+		n->prev = p;
+	}
+	free(t->val);
+	free(t);
+
+	// Return the correct pointer
+	return (p != NULL) ? p : (n != NULL) ? n : NULL;
+}
