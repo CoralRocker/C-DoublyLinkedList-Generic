@@ -6,7 +6,10 @@ typedef struct DLL {
 	void* val;
 } DLL;
 
-/* TODO: Make init function, free function, and a RECURSIVE free function */
+/* Init functino for DLL. Uses malloc for the allocation of system resources, 
+ * so the user must free memory to avoid memory leaks and keep undefined behavior
+ * to a minimum.
+ * */
 DLL* initDLL(void* val){
 	DLL* nDLL = malloc(sizeof(DLL*)*2 + sizeof(void*));
 	nDLL->prev = NULL;
@@ -23,7 +26,10 @@ DLL* DLLstart(DLL* list){
 	return t;
 }
 
-/* Frees all items in the list. DOES NOT FREE THEIR VAL POINTER */
+/* Frees all items in the list. DOES NOT FREE THEIR VAL POINTER 
+ * The rFreeDLL function frees the val pointer, if need be. Use 
+ * that one on void*'s that were allocated with malloc.
+ * */
 void freeDLL(DLL *list)
 {
 	DLL *t = DLLstart(list), *f = t;
@@ -144,6 +150,13 @@ DLL* popDLL(DLL* list){
  * or NULL if neither exist.
  *
  * Returns the original list if the specified index is invalid.
+ *
+ * Since this method has the potential to delete and free the memory pointed to by the user's DLL* variable,
+ * it is important that the DLL* that is returned be assigned back to the DLL* variable passed to the function.
+ *
+ * Example:
+ * 	my_variable = deleteDLL(my_variable, 0); // This would delete the first link in the list and return a valid link pointer, to ensure that the passed variable still contains a valid link.
+ *
  */
 DLL* deleteDLL(DLL* list, int index){
 
@@ -197,7 +210,8 @@ DLL* mDeleteDLL(DLL* list, int index){
 }
 
 /* Creates a link and adds it at the specified index. Adds it so that the new link is at the specified index, pushing 
- * everything after it back one.
+ * everything after it back one. If the index given is equal to the size of the list, it will place the new link at the
+ * end of the list.  Nothing happens if the index is smaller than 0 or larger than the size of the list. 
  * */
 void insertDLL(DLL* list, int index, void* val){
 	DLL *t = DLLstart(list), *prev=NULL;
