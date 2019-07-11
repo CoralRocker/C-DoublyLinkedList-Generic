@@ -221,3 +221,14 @@ void insertDLL(DLL* list, int index, void* val){
 		counter++;
 	}
 }
+
+/* Sets the value of a given link to that given. 
+ * Sort of impossible to screw up, as nothing happens if the index is invalid.
+ * If void* that is passed is malloc'd, the mDeleteDLL() method or the rFreeDLL() methods
+ * should be used to free the memory necessary. 
+ * */
+void setDLL(DLL *list, int index, void* val){
+	
+	DLLat(list, index)->val = val;
+
+}
