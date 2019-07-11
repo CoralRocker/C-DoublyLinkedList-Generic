@@ -16,10 +16,17 @@ void printDLL(DLL* list){
 int main(){
 	DLL *dll = initDLL(2320);
 	pushDLL(dll, 2321);
-	//pushDLL(dll, 2322);
-	printf("DLL 0: %p\n", dll);
-	dll = deleteDLL(dll, 0);
-	printf("Del 0: %p\n", dll);
-	dll = deleteDLL(dll, 0);
-	printf("Del 0: %p\n", dll);
+	
+	printDLL(dll);
+
+	insertDLL(dll, 0, 9003);
+
+	printDLL(dll);
+
+	insertDLL(dll, 3, 9003);
+	insertDLL(dll, 2, 9003);
+
+	printDLL(dll);
+
+	freeDLL(dll);
 }

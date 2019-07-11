@@ -195,3 +195,29 @@ DLL* mDeleteDLL(DLL* list, int index){
 	// Return the correct pointer
 	return (p != NULL) ? p : (n != NULL) ? n : NULL;
 }
+
+/* Creates a link and adds it at the specified index. Adds it so that the new link is at the specified index, pushing 
+ * everything after it back one.
+ * */
+void insertDLL(DLL* list, int index, void* val){
+	DLL *t = DLLstart(list), *prev=NULL;
+
+	int counter = 0;
+	while(1){
+		if(counter == index){
+			DLL* ndll = initDLL(val);
+			if(prev)
+				prev->next = ndll;
+			ndll->prev = prev;
+			if(t){
+				ndll->next = t;
+				t->prev = ndll;
+			}
+		}
+		if(t == NULL)
+			break;
+		prev = t;
+		t = t->next;
+		counter++;
+	}
+}
