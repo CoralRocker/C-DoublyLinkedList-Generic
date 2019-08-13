@@ -6,7 +6,7 @@ typedef struct DLL {
 	void* val;
 } DLL;
 
-/* Init functino for DLL. Uses malloc for the allocation of system resources, 
+/* Init function for DLL. Uses malloc for the allocation of system resources, 
  * so the user must free memory to avoid memory leaks and keep undefined behavior
  * to a minimum.
  * */

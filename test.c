@@ -53,4 +53,13 @@ int main(){
 
 	printDLL(dll);
 	freeDLL(dll);
+	
+	puts("\nTesting system with malloc'd data...");
+	dll = initDLL(malloc(sizeof(size_t)));
+	
+	puts("Filling dll with 20 malloc'd values...");
+	for(int i = 0; i < 19; i++){
+		
+	}
+
 }
