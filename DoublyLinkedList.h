@@ -145,6 +145,23 @@ DLL* popDLL(DLL* list){
 	return t;
 }
 
+/* Removes the last link in the DLL 
+ * This method has the ability to remove the object pointed to by the given DLL pointer.
+ * Thus, it returns a pointer to the last DLL object, or NULL if no more objects exist within
+ * the list.
+ * */
+DLL* popDLL(DLL* list){
+	DLL* t = DLLend(list);
+	if(t->prev == NULL){
+		free(t);
+		return NULL;
+	}
+	t = t->prev;
+	free(t->next);
+	t->next = NULL;
+	return t;
+}
+
 /* Removes a link from a specified index. 
  * Returns a pointer to the previous DLL object to the one deleted, the next one if that one doesn't exist,
  * or NULL if neither exist.

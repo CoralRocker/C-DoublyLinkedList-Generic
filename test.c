@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include "DoublyLinkedList.h"
 
-#define getVar(var) #var
 
 void printDLL(DLL* list){
 	int size = DLLsize(list);
@@ -72,7 +71,12 @@ int main(){
 	printf("\tmDeleteDLL(dll, 2)\n");
 	mDeleteDLL(dll, 2);
 
+	puts("Malloc'd DLL:");
+	for(int i = 0; i < 20; i++){
+		printf("%d: %p\n", i, atDLL(dll, i));
+	}
+	puts("");
 
-
+	rFreeDLL(dll);
 
 }
