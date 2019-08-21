@@ -57,9 +57,22 @@ int main(){
 	puts("\nTesting system with malloc'd data...");
 	dll = initDLL(malloc(sizeof(size_t)));
 	
+
 	puts("Filling dll with 20 malloc'd values...");
 	for(int i = 0; i < 19; i++){
-		
+		pushDLL(dll, malloc(sizeof(size_t)*i));					
 	}
+	
+	puts("Malloc'd DLL:");
+	for(int i = 0; i < 20; i++){
+		printf("%d: %p\n", i, atDLL(dll, i));
+	}
+	puts("");
+
+	printf("\tmDeleteDLL(dll, 2)\n");
+	mDeleteDLL(dll, 2);
+
+
+
 
 }
