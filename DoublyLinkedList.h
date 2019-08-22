@@ -150,14 +150,16 @@ DLL* popDLL(DLL* list){
  * Thus, it returns a pointer to the last DLL object, or NULL if no more objects exist within
  * the list.
  * */
-DLL* popDLL(DLL* list){
+DLL* mPopDLL(DLL* list){
 	DLL* t = DLLend(list);
 	if(t->prev == NULL){
 		free(t);
 		return NULL;
 	}
 	t = t->prev;
+	free(t->next->val);
 	free(t->next);
+	
 	t->next = NULL;
 	return t;
 }
