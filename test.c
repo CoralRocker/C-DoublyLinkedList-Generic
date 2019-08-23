@@ -68,9 +68,10 @@ int main(){
 	}
 	puts("");
 
-	printf("mDeleteDLL(dll, 2)\n\n");
+	printf("mDeleteDLL(dll, 2)\n");
 	dll = mDeleteDLL(dll, 2);
-
+	printf("mPopDLL(dll)\n\n");
+	dll = mPopDLL(dll);
 	puts("Malloc'd DLL:");
 	for(int i = 0; i < DLLsize(dll); i++){
 		printf("%d: %p\n", i, atDLL(dll, i));
