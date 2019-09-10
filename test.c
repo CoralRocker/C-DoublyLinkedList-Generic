@@ -80,4 +80,10 @@ int main(){
 
 	rFreeDLL(dll);
 
+	puts("Creating DLL of size 23 with value of 0...");
+	dll = initSizedDLL(0, 23);
+	printf("\tDLL size: %ld\n", DLLsize(dll));
+	printDLL(dll);
+	freeDLL(dll);
+
 }

@@ -18,6 +18,19 @@ DLL* initDLL(void* val){
 	return nDLL;
 }
 
+DLL* initSizedDLL(void* val, size_t size){
+	DLL* tmp = initDLL(val);
+	DLL* tmp2 = tmp;
+	DLL* start = tmp;
+	for(size_t i = 1; i < size; i++){
+		tmp2 = initDLL(val);
+		tmp->next = tmp2;
+		tmp2->prev = tmp;
+		tmp = tmp2;
+	}
+	return start;
+}
+
 /* Returns pointer to first link in DLL */
 DLL* DLLstart(DLL* list){
 	DLL *t = list;
